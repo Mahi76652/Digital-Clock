@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React DOM Check</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://wallpaperaccess.com/full/10833933.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+        h1 {
+            color: #fff;
+            margin-top: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 20px;
+            padding: 20px;
+        }
+        .box {
+            width: 300px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            color: #333;
+        }
+        #regularDiv {
+            background-color: rgba(26, 120, 120, 0.8);
+            color: #fff;
+        }
+        #reactDiv {
+            background-color: rgba(106, 73, 25, 0.8);
+            color: #fff;
+        }
+        input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 5px;
+        }
+        p {
+            margin: 0;
+            padding: 10px 0;
+            font-size: 24px;
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+<body>
+    <h1>React DOM Check</h1>
+    <div class="container">
+        <!-- a regular div, refreshed every second to show time -->
+        <div class="box" id="regularDiv">
+            this should change
+        </div>
+
+        <!-- a div which is being updated using react -->
+        <div class="box" id="reactDiv">
+            this should change
+        </div>
+    </div>
+
+    <script type="text/babel">
+        const rootNode = ReactDOM.createRoot(document.getElementById("reactDiv"));
+
+        function RegularDiv() {
+            const [time, setTime] = React.useState(new Date());
+
+            React.useEffect(() => {
+                const interval = setInterval(() => setTime(new Date()), 1000);
+                return () => clearInterval(interval);
+            }, []);
+
+            return (
+                <div>
+                    <input type="text" />
+                    <p>{time.toLocaleTimeString('en-US', { hour12: false })}</p>
+                </div>
+            );
+        }
+
+        function renderThis() {
+            const time = new Date().toLocaleTimeString('en-US', { hour12: false });
+            document.getElementById("regularDiv").innerHTML =
+                '<input type="text"/> <p>' + time + '</p>';
+
+            rootNode.render(<RegularDiv />);
+        }
+
+        setInterval(renderThis, 1000);
+    </script>
+</body>
+</html>
